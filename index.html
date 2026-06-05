@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RISK Store - Men's Fashion</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- شاشة اللوجين -->
+  <div id="loginScreen" class="screen active">
+    <div class="login-bg">
+      <div class="grain"></div>
+      <div class="login-card">
+        <div class="logo-area">
+          <div class="logo-ring">
+            <span class="logo-letter">R</span>
+          </div>
+          <h1 class="brand-name">RISK STORE</h1>
+          <p class="brand-sub">MEN'S FASHION</p>
+        </div>
+
+        <div class="login-tabs">
+          <button class="tab-btn active" onclick="selectRole('admin')">أدمن</button>
+          <button class="tab-btn" onclick="selectRole('cashier')">كاشير</button>
+        </div>
+
+        <div class="input-group">
+          <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" />
+        </div>
+        <div class="input-group">
+          <input type="password" id="loginPassword" placeholder="كلمة المرور" />
+        </div>
+
+        <div id="loginError" class="error-msg"></div>
+
+        <button class="login-btn" onclick="handleLogin()">
+          <span>دخول</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- داشبورد الأدمن -->
+  <div id="adminScreen" class="screen">
+    <nav class="navbar">
+      <div class="nav-brand">
+        <span class="nav-logo">R</span>
+        <span>RISK STORE</span>
+      </div>
+      <div class="nav-links">
+        <button class="nav-btn active" onclick="showAdminTab('products')">المنتجات</button>
+        <button class="nav-btn" onclick="showAdminTab('orders')">الطلبات</button>
+        <button class="nav-btn" onclick="showAdminTab('reports')">التقارير</button>
+      </div>
+      <button class="logout-btn" onclick="logout()">خروج</button>
+    </nav>
+
+    <!-- تاب المنتجات -->
+    <div id="tab-products" class="tab-content active-tab">
+      <div class="page-header">
+        <h2>إدارة المنتجات</h2>
+        <button class="add-btn" onclick="openAddProduct()">+ إضافة منتج</button>
+      </div>
+
+      <!-- فورم إضافة منتج -->
+      <div id="addProductForm" class="form-card hidden">
+        <h3>منتج جديد</h3>
+        <div class="form-grid">
+          <input type="text" id="pName" placeholder="اسم المنتج" />
+          <input type="number" id="pPrice" placeholder="السعر (جنيه)" />
+          <input type="number" id="pStock" placeholder="الكمية" />
+          <select id="pCategory">
+            <option value="">الفئة</option>
+            <option value="تيشرت">تيشرت</option>
+            <option value="بنطلون">بنطلون</option>
+            <option value="جاكيت">جاكيت</option>
+            <option value="حذاء">حذاء</option>
+            <option value="إكسسوار">إكسسوار</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="save-btn" onclick="saveProduct()">حفظ</button>
+          <button class="cancel-btn" onclick="closeAddProduct()">إلغاء</button>
+        </div>
+      </div>
+
+      <div id="productsList" class="products-grid"></div>
+    </div>
+
+    <!-- تاب الطلبات -->
+    <div id="tab-orders" class="tab-content">
+      <div class="page-header">
+        <h2>سجل الطلبات</h2>
+      </div>
+      <div id="ordersList" class="orders-list"></div>
+    </div>
+
+    <!-- تاب التقارير -->
+    <div id="tab-reports" class="tab-content">
+      <div class="page-header">
+        <h2>التقارير</h2>
+      </div>
+      <div id="reportsData" class="reports-grid"></div>
+    </div>
+  </div>
+
+  <!-- داشبورد الكاشير -->
+  <div id="cashierScreen" class="screen">
+    <nav class="navbar">
+      <div class="nav-brand">
+        <span class="nav-logo">R</span>
+        <span>RISK STORE - كاشير</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">خروج</button>
+    </nav>
+
+    <div class="cashier-layout">
+      <!-- قائمة المنتجات -->
+      <div class="cashier-products">
+        <div class="search-bar">
+          <input type="text" id="searchProduct" placeholder="🔍 ابحث عن منتج..." oninput="filterProducts()" />
+        </div>
+        <div id="cashierProductsList" class="cashier-products-grid"></div>
+      </div>
+
+      <!-- السلة -->
+      <div class="cart-panel">
+        <h3 class="cart-title">🛒 الفاتورة</h3>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-footer">
+          <div class="cart-total">
+            <span>الإجمالي:</span>
+            <span id="cartTotal">0 جنيه</span>
+          </div>
+          <button class="checkout-btn" onclick="checkout()">إتمام البيع</button>
+          <button class="clear-btn" onclick="clearCart()">مسح السلة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال الفاتورة -->
+  <div id="receiptModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="receipt">
+        <div class="receipt-header">
+          <div class="receipt-logo">R</div>
+          <h2>RISK STORE</h2>
+          <p>MEN'S FASHION</p>
+          <p id="receiptDate"></p>
+        </div>
+        <div id="receiptItems"></div>
+        <div class="receipt-total">
+          <strong>الإجمالي: <span id="receiptTotal"></span></strong>
+        </div>
+        <p class="receipt-thanks">شكراً لتسوقكم معنا!</p>
+      </div>
+      <div class="modal-actions">
+        <button onclick="printReceipt()">🖨️ طباعة</button>
+        <button onclick="closeReceipt()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
